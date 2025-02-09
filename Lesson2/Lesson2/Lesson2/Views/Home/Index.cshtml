@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Services.Suggestion<Services.Party>>
+
+@{
+    ViewData["Title"] = "Lesson2";
+}
+
+<div class="container">   
+    Standart
+    <hr>
+    Фильтры:
+    <div id="filter">
+        <span class="col-sm-2">ИНН:</span><input id="filter_name" class="col-sm-4" />
+        <a href="#" id="refresh_filter_button" class="btn btn-dark col-sm-2 offset-1">Показать</a>
+    </div>
+    <div id="content"></div>    
+</div>
+
+<div class="container">  
+    WS
+    <hr>
+    <a href="#" id="connect_buttonws" class="btn btn-dark col-sm-2 offset-1">Подключиться</a>
+    <hr>
+    <a href="#" id="disconnect_buttonws" class="btn btn-dark col-sm-2 offset-1">Отключиться</a>
+    <hr>
+    Состояние: <span class="col-sm-2" id="stateLabel"></span>
+    <hr>
+    Фильтры:
+    <div id="filter">
+        <span class="col-sm-2">ИНН:</span><input id="filter_namews" class="col-sm-4" />
+        <a href="#" id="refresh_filter_buttonws" class="btn btn-dark col-sm-2 offset-1">Показать</a>
+    </div>
+    <div id="contentws"></div>    
+</div>
+
+@section scripts
+    {
+        <script type="text/javascript">
+            var scheme = document.location.protocol === "https:" ? "wss" : "ws";
+            var port = document.location.port ? (":" + document.location.port) : "";
+            var connectionUrl = scheme + "://" + document.location.hostname + port + "/ws" ;    
+            var socket;
+
+            function refresh() {
+                var inn = $('#filter_name').val();
+                if(inn.length > 3)
+                {
+                    $.get("Home/List/?inn=" + inn, function (data, textStatus, request) {
+                        $('#content').html(data);
+                    });
+                }
+            }
+
+            function updateState() {
+                
+                if (socket) {
+                    switch (socket.readyState) {
+                        case WebSocket.CLOSED:
+                                $("#stateLabel").html("Closed");                           
+                            break;
+                        case WebSocket.CLOSING:
+                                $("#stateLabel").html("Closing...");
+                            break;
+                        case WebSocket.CONNECTING:
+                                $("#stateLabel").html("Connecting...");
+                            break;
+                        case WebSocket.OPEN:
+                                $("#stateLabel").html("Open");
+                            break;
+                        default:
+                                $("#stateLabel").html("Unknown WebSocket State: " + htmlEscape(socket.readyState));
+                            break;
+                    }
+                }
+            }
+
+            $(function () {
+                $.ajaxSetup({ cache: false });
+                refresh();
+                $("#refresh_filter_button").click(function () {
+                    refresh();
+                });  
+                
+               $("#refresh_filter_buttonws").click(function () {
+                       if (!socket || socket.readyState !== WebSocket.OPEN) {
+                            alert("socket not connected");
+                        }
+                        else
+                        {
+                            var data = $('#filter_namews').val();
+                            socket.send(data);
+                        }
+               }); 
+
+               $("#connect_buttonws").click(function () {
+                            $("#stateLabel").html("Connecting");
+                        socket = new WebSocket(connectionUrl);
+                        socket.onopen = function (event) {
+                            updateState();
+                        };
+                        socket.onclose = function (event) {
+                            updateState();
+                        };
+                        socket.onerror = updateState;
+                        socket.onmessage = function (event) {
+                            $('#contentws').html(event.data);
+                        };
+               });
+
+                $("#disconnect_buttonws").click(function () {
+                        if (!socket || socket.readyState !== WebSocket.OPEN) {
+                             alert("socket not connected");
+                         }
+                         else{
+                             socket.close(1000, "Closing from client");
+                         }
+                });
+
+                function htmlEscape(str) {
+                    return str.toString()
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                }
+            })
+        </script>
+}

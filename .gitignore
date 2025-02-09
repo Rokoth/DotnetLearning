@@ -1,0 +1,22 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Lesson1/.vs
+/Lesson1/Lesson1/bin/Debug/net6.0
+/Lesson1/Lesson1/obj
+/Lesson1/Lesson2/bin/Debug/net6.0
+/Lesson1/Lesson2/obj
+/Lesson2/Lesson2/.vs
+/Lesson2/Lesson2/Lesson2/bin/Debug/net6.0
+/Lesson2/Lesson2/Lesson2/obj
+/Lesson2/Lesson2/Lesson2.Console/bin/Debug/net6.0
+/Lesson2/Lesson2/Lesson2.Console/obj
+/Lesson2/Lesson2/Services/bin/Debug/net6.0
+/Lesson2/Lesson2/Services/obj
+/Lesson3/.vs
+/Lesson3/Lesson1/bin/Debug/net6.0
+/Lesson3/Lesson1/obj
+/Lesson3/Lesson2/bin/Debug/net6.0
+/Lesson3/Lesson2/obj

@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Services.Suggestion<Services.Party>>
+
+<table class="table">
+    <thead>
+        <tr>            
+            <th>@Html.DisplayNameFor(s => s.value)</th>
+            <th>@Html.DisplayNameFor(s => s.unrestricted_value)</th>
+            <th>@Html.DisplayNameFor(s => s.data.inn)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>            
+                    <td>@item.value</td>
+                    <td>@item.unrestricted_value</td>
+                    <td>@item.data.inn</td>                
+            </tr>
+        }
+    </tbody>
+</table>
